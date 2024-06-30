@@ -24,20 +24,15 @@ func loadPage(title string) (*Page, error) {
 	return &Page{Title: title, Body: body}, err
 }
 
-func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
+var templates = template.Must(template.ParseFiles(("edit.html"), ("view.html")))
 
-	t, err := template.ParseFiles(tmpl + ".html")
+func renderTemplate(w http.ResponseWriter, tmpl string, p *Page) {
+	err := templates.ExecuteTemplate(w, tmpl+".html", p)
+
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
-	err = t.Execute(w, p)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-
 }
 
 func viewHandler(w http.ResponseWriter, r *http.Request) {
