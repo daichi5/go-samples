@@ -33,7 +33,7 @@ func (c *ItemController) FindAll(ctx *gin.Context) {
 }
 
 func (c *ItemController) FindById(ctx *gin.Context) {
-	itemId, err := strconv.ParseUint(ctx.Param("id"), 10, 64)
+	itemId, err := strconv.ParseUint(ctx.Param("id"), 10, strconv.IntSize)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error": "Invalid id",
