@@ -23,5 +23,7 @@ func main() {
 	r := gin.Default()
 	r.GET("/items", itemController.FindAll)
 	r.GET("/items/:id", itemController.FindById)
+	r.POST("/items", itemController.Create)
+
 	r.Run() // listen and serve on 0.0.0.0:8080
 }
