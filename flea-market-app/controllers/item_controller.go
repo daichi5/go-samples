@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"flea-market-app/dto"
+	"flea-market-app/models"
 	"flea-market-app/services"
 	"net/http"
 	"strconv"
@@ -60,6 +61,14 @@ func (c *ItemController) FindById(ctx *gin.Context) {
 }
 
 func (c *ItemController) Create(ctx *gin.Context) {
+	user, exists := ctx.Get("user")
+	if !exists {
+		ctx.AbortWithStatus(http.StatusUnauthorized)
+		return
+	}
+
+	userId := user.(*models.User).ID
+
 	var input dto.CreateItemInput
 
 	if err := ctx.ShouldBindJSON(&input); err != nil {
@@ -67,7 +76,7 @@ func (c *ItemController) Create(ctx *gin.Context) {
 		return
 	}
 
-	newItem, err := c.service.Create(input)
+	newItem, err := c.service.Create(input, userId)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
