@@ -9,6 +9,7 @@ import (
 	"flea-market-app/repositories"
 	"flea-market-app/services"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -33,6 +34,8 @@ func main() {
 	authController := controllers.NewAuthController(authService)
 
 	r := gin.Default()
+	// NOTE: This is a local development setting. You should specify cors settings in production.
+	r.Use(cors.Default())
 	itemRouter := r.Group("/items")
 	itemRouterWithAuth := r.Group("/items", middlewares.AuthMiddleware(authService))
 	authRouter := r.Group("/auth")
