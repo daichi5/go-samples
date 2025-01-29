@@ -34,7 +34,9 @@ func (c *ItemController) FindAll(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Unexpected error"})
 		return
 	}
-	ctx.JSON(200, items)
+	ctx.JSON(http.StatusOK, gin.H{
+		"data": items,
+	})
 }
 
 func (c *ItemController) FindById(ctx *gin.Context) {
