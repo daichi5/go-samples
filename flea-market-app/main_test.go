@@ -101,3 +101,24 @@ func TestCreate(t *testing.T) {
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.Equal(t, uint(4), res["data"].ID)
 }
+
+func TestCreateUnauthorized(t *testing.T) {
+	router := setup()
+
+	createItemInput := dto.CreateItemInput{
+		Name:        "test item4",
+		Price:       4000,
+		Description: "test item4 description",
+	}
+	reqBody, _ := json.Marshal(createItemInput)
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("POST", "/items", bytes.NewBuffer((reqBody)))
+
+	router.ServeHTTP(w, req)
+
+	var res map[string]models.Item
+	json.Unmarshal(w.Body.Bytes(), &res)
+
+	assert.Equal(t, http.StatusUnauthorized, w.Code)
+}
