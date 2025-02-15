@@ -3,10 +3,9 @@ package main
 import (
 	"fmt"
 	"log"
-	"os"
 	"protobuf-sample/pb"
 
-	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/encoding/protojson"
 )
 
 func main() {
@@ -27,24 +26,42 @@ func main() {
 		},
 	}
 
-	binData, err := proto.Marshal(employee)
+	// 	binData, err := proto.Marshal(employee)
+	// 	if err != nil {
+	// 		log.Fatal("Failed to marshal employee: ", err)
+	// 	}
+
+	// 	if err := os.WriteFile("employee.bin", binData, 0666); err != nil {
+	// 		log.Fatal("Failed to write employee to file: ", err)
+	// 	}
+
+	// 	in, err := os.ReadFile("employee.bin")
+	// 	if err != nil {
+	// 		log.Fatal("Failed to read employee from file: ", err)
+	// 	}
+
+	// 	employee2 := &pb.Employee{}
+	// 	if err := proto.Unmarshal(in, employee2); err != nil {
+	// 		log.Fatal("Failed to unmarshal employee: ", err)
+	// 	}
+
+	// 	fmt.Println("Unmarshalled employee: ", employee2)
+
+	m := protojson.MarshalOptions{}
+	out, err := m.Marshal(employee)
+
 	if err != nil {
 		log.Fatal("Failed to marshal employee: ", err)
 	}
 
-	if err := os.WriteFile("employee.bin", binData, 0666); err != nil {
-		log.Fatal("Failed to write employee to file: ", err)
-	}
+	// fmt.Println("Marshalled employee: ", string(out))
 
-	in, err := os.ReadFile("employee.bin")
-	if err != nil {
-		log.Fatal("Failed to read employee from file: ", err)
-	}
+	jsonStr := string(out)
 
-	employee2 := &pb.Employee{}
-	if err := proto.Unmarshal(in, employee2); err != nil {
+	readEmployee := &pb.Employee{}
+	if err := protojson.Unmarshal([]byte(jsonStr), readEmployee); err != nil {
 		log.Fatal("Failed to unmarshal employee: ", err)
 	}
 
-	fmt.Println("Unmarshalled employee: ", employee2)
+	fmt.Println("Unmarshalled employee: ", readEmployee)
 }
